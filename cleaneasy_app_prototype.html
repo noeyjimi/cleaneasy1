@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CleanEasy - Cleaning Made Effortless</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for Gamification -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            green: '#4E9F3D',
+                            mint: '#D8F3DC',
+                            lightgreen: '#B7E4C7',
+                            cream: '#FEFAE0',
+                            orange: '#FF9F45',
+                            softblue: '#E8F1F5',
+                            accentblue: '#3A86FF',
+                            dark: '#1E293B'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Prompt', 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .animate-bounce-short {
+            animation: bounce 0.6s ease infinite alternate;
+        }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-6px); }
+        }
+        .pulse-glow {
+            box-shadow: 0 0 15px rgba(78, 159, 61, 0.4);
+        }
+    </style>
+</head>
+<body class="h-full flex justify-center items-center bg-slate-900 sm:p-4 selection:bg-emerald-200">
+
+    <!-- Mobile Frame Outer Container -->
+    <div class="w-full max-w-md h-full sm:h-[880px] bg-slate-50 sm:rounded-[40px] shadow-2xl flex flex-col overflow-hidden relative border-0 sm:border-8 border-slate-800">
+
+        <!-- Top Header Navigation -->
+        <header class="bg-white px-5 pt-4 pb-3 shadow-sm border-b border-slate-100 flex justify-between items-center z-20">
+            <div class="flex items-center space-x-2">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-500 flex items-center justify-center text-white text-xl font-bold shadow-md shadow-emerald-200">
+                    <i class="fa-solid fa-sparkles"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-slate-800 text-lg leading-tight flex items-center gap-1.5">
+                        CleanEasy
+                        <span class="bg-amber-100 text-amber-700 text-[10px] px-2 py-0.5 rounded-full font-semibold">AI Powered</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">สำหรับคนขี้เกียจแต่ชอบความสะอาด</p>
+                </div>
+            </div>
+            
+            <!-- Points Counter -->
+            <button onclick="switchTab('rewards')" class="flex items-center space-x-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 text-amber-700 px-3 py-1.5 rounded-full transition text-xs font-bold shadow-xs">
+                <i class="fa-solid fa-coins text-amber-500 text-sm"></i>
+                <span id="user-points">150</span>
+                <span class="text-[10px] text-amber-600 font-normal">pts</span>
+            </button>
+        </header>
+
+        <!-- Main Content Area (Scrollable Views) -->
+        <main class="flex-1 overflow-y-auto hide-scrollbar p-4 space-y-4 pb-24" id="main-content">
+
+            <!-- TAB 1: HOME DASHBOARD -->
+            <div id="tab-home" class="space-y-4">
+                
+                <!-- Hero Banner -->
+                <div class="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-700 rounded-3xl p-5 text-white shadow-lg shadow-emerald-900/10">
+                    <div class="absolute -right-4 -bottom-6 opacity-20 text-9xl">
+                        <i class="fa-solid fa-broom-ball"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <span class="inline-block bg-white/20 backdrop-blur-md text-white text-xs px-2.5 py-1 rounded-lg mb-2 font-medium">
+                            ✨ เหนื่อย/ขี้เกียจ? ให้เราช่วย!
+                        </span>
+                        <h2 class="text-xl font-bold leading-snug">ทำความสะอาดบ้านง่ายๆ<br>ฉบับคนไม่มีเวลา</h2>
+                        <p class="text-xs text-emerald-100 mt-1 opacity-90">ย่อยงานเป็นภารกิจ 5 นาที หรือเรียกช่างแวะมาช่วยงานด่วน!</p>
+                        
+                        <div class="mt-4 flex gap-2">
+                            <button onclick="switchTab('ai-scanner')" class="bg-white text-emerald-800 hover:bg-emerald-50 px-4 py-2.5 rounded-xl font-semibold text-xs transition flex items-center gap-2 shadow-md">
+                                <i class="fa-solid fa-camera-retro text-emerald-600"></i> สแกนห้องสแกนงาน
+                            </button>
+                            <button onclick="switchTab('micro-hire')" class="bg-emerald-800/50 hover:bg-emerald-800/80 text-white backdrop-blur-sm border border-white/20 px-3.5 py-2.5 rounded-xl font-medium text-xs transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-user-ninja"></i> จ้างงานด่วน
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Streak & Gamification Banner -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-500 flex items-center justify-center text-2xl font-bold">
+                            🔥
+                        </div>
+                        <div>
+                            <div class="flex items-center space-x-1.5">
+                                <h3 class="font-bold text-slate-800 text-sm">ทำต่อเนื่อง 3 วันแล้ว!</h3>
+                                <span class="bg-emerald-100 text-emerald-700 text-[10px] font-semibold px-2 py-0.5 rounded">Pro</span>
+                            </div>
+                            <p class="text-xs text-slate-500">เคลียร์ภารกิจอีก 1 อย่างวันนี้เพื่อรักษาสถิติ</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xs font-semibold text-slate-400">ระดับต่อไป</span>
+                        <p class="text-xs font-bold text-emerald-600">Level 4 🏆</p>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Grid -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <button onclick="openQuickCleanModal()" class="bg-amber-50 hover:bg-amber-100/80 border border-amber-200/50 p-3 rounded-2xl text-left transition group">
+                        <div class="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm mb-2 shadow-sm group-hover:scale-110 transition">
+                            <i class="fa-solid fa-bolt"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-xs">Express 15 นาที</h4>
+                        <p class="text-[10px] text-slate-500 mt-0.5">เคลียร์ไวทันใจ</p>
+                    </button>
+
+                    <button onclick="switchTab('ai-scanner')" class="bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-200/50 p-3 rounded-2xl text-left transition group">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center text-sm mb-2 shadow-sm group-hover:scale-110 transition">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-xs">AI วิเคราะห์ห้อง</h4>
+                        <p class="text-[10px] text-slate-500 mt-0.5">จัดลำดับความสำคัญ</p>
+                    </button>
+
+                    <button onclick="switchTab('micro-hire')" class="bg-emerald-50 hover:bg-emerald-100/80 border border-emerald-200/50 p-3 rounded-2xl text-left transition group">
+                        <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-sm mb-2 shadow-sm group-hover:scale-110 transition">
+                            <i class="fa-solid fa-hand-holding-hand"></i>
+                        </div>
+                        <h4 class="font-bold text-slate-800 text-xs">จ้างไมโคร</h4>
+                        <p class="text-[10px] text-slate-500 mt-0.5">เฉพาะจุดเริ่มต้น 99.-</p>
+                    </button>
+                </div>
+
+                <!-- Daily 5-Minute Micro Missions -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                                <i class="fa-solid fa-list-check text-emerald-600"></i>
+                                ภารกิจย่อยประจำวัน (5 นาที)
+                            </h3>
+                            <p class="text-xs text-slate-400">ทำง่าย ไม่ต้องเหนื่อยนาน รับคะแนนทันที</p>
+                        </div>
+                        <span class="text-xs bg-slate-100 text-slate-600 font-semibold px-2.5 py-1 rounded-full" id="mission-progress-text">0/3 สำเร็จ</span>
+                    </div>
+
+                    <!-- Task List -->
+                    <div class="space-y-2" id="daily-tasks-list">
+                        
+                        <div class="task-card flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 transition hover:bg-slate-100/60" id="task-1">
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" onchange="toggleTask(this, 30)" class="w-5 h-5 accent-emerald-600 rounded cursor-pointer">
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-700 task-title">เก็บขยะบนโต๊ะทำงานไปทิ้ง</p>
+                                    <p class="text-[10px] text-slate-400"><i class="fa-regular fa-clock"></i> 2 นาที • ได้ +30 Points</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/50">+30 pts</span>
+                        </div>
+
+                        <div class="task-card flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 transition hover:bg-slate-100/60" id="task-2">
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" onchange="toggleTask(this, 50)" class="w-5 h-5 accent-emerald-600 rounded cursor-pointer">
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-700 task-title">จัดหมอนและพับผ้าห่มบนเตียง</p>
+                                    <p class="text-[10px] text-slate-400"><i class="fa-regular fa-clock"></i> 3 นาที • ได้ +50 Points</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/50">+50 pts</span>
+                        </div>
+
+                        <div class="task-card flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 transition hover:bg-slate-100/60" id="task-3">
+                            <div class="flex items-center space-x-3">
+                                <input type="checkbox" onchange="toggleTask(this, 40)" class="w-5 h-5 accent-emerald-600 rounded cursor-pointer">
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-700 task-title">เช็ดคราบแก้วน้ำบนโต๊ะกินข้าว</p>
+                                    <p class="text-[10px] text-slate-400"><i class="fa-regular fa-clock"></i> 2 นาที • ได้ +40 Points</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/50">+40 pts</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Banner to Research Feature Rationale -->
+                <div onclick="switchTab('sources')" class="bg-gradient-to-r from-slate-800 to-indigo-900 text-white p-4 rounded-2xl shadow-md cursor-pointer hover:opacity-95 transition flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center text-indigo-300">
+                            <i class="fa-solid fa-lightbulb text-lg"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold">ที่มา & เหตุผลการออกแบบ Feature</h4>
+                            <p class="text-[11px] text-slate-300">อ่านงานวิจัย & Insight ที่เรานำมาปรับใช้กับโปรเจกต์</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-slate-400 text-xs"></i>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: AI SMART SCANNER & AUTO PLANNER -->
+            <div id="tab-ai-scanner" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i>
+                            AI Room Scan & Auto-Planner
+                        </h3>
+                        <span class="text-[10px] bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-full">v2.4 AI</span>
+                    </div>
+                    <p class="text-xs text-slate-500">ถ่ายรูปห้องที่รก AI จะช่วยแยกงานย่อยที่ **ออกแรงน้อยสุด แต่ห้องดูสะอาดขึ้นมากที่สุด** ให้คุณทันที!</p>
+                    
+                    <!-- Scanner Interactive Viewport -->
+                    <div class="relative bg-slate-900 rounded-2xl h-56 flex flex-col items-center justify-center overflow-hidden border-2 border-dashed border-indigo-300/40 group" id="scanner-box">
+                        
+                        <!-- Simulated Camera Preview / Image -->
+                        <img id="scanned-img" src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80" class="absolute inset-0 w-full h-full object-cover opacity-60" alt="Messy Room">
+                        
+                        <!-- Scanning Line Animation -->
+                        <div id="scan-line" class="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-indigo-400 to-transparent shadow-[0_0_15px_#818cf8] hidden"></div>
+
+                        <!-- Scanner Overlay UI -->
+                        <div class="relative z-10 text-center p-4" id="scan-prompt">
+                            <div class="w-14 h-14 mx-auto rounded-full bg-indigo-600/80 backdrop-blur-md text-white flex items-center justify-center text-2xl mb-2 shadow-lg cursor-pointer hover:scale-105 transition" onclick="triggerAIScan()">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <p class="text-xs font-semibold text-white drop-shadow">กดเพื่อสแกนห้องหรืออัปโหลดรูป</p>
+                            <span class="text-[10px] text-slate-300">รองรับการสแกนห้องนอน โต๊ะทำงาน และห้องนั่งเล่น</span>
+                        </div>
+                    </div>
+
+                    <button onclick="triggerAIScan()" id="scan-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-md shadow-indigo-200">
+                        <i class="fa-solid fa-bolt"></i> เริ่มการสแกนวิเคราะห์ด้วย AI
+                    </button>
+                </div>
+
+                <!-- AI Output Results (Hidden by default, shown after scan) -->
+                <div id="ai-results" class="space-y-3 hidden">
+                    <div class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white p-3.5 rounded-2xl flex items-center justify-between shadow-sm">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-check-circle text-lg text-emerald-200"></i>
+                            <div>
+                                <h4 class="text-xs font-bold">วิเคราะห์สำเร็จ! พบ 3 จุดคุ้มค่าต่อการทำ</h4>
+                                <p class="text-[10px] opacity-90">ทำครบ 3 ข้อนี้ ห้องจะดูสะอาดขึ้น 80% ใน 8 นาที!</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                        <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">ลำดับงานแนะนำ (High Impact / Low Effort)</h4>
+                        
+                        <div class="space-y-2">
+                            <div class="p-3 bg-amber-50 rounded-xl border border-amber-200/60 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-6 h-6 rounded-full bg-amber-500 text-white font-bold text-xs flex items-center justify-center">1</span>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">เก็บเสื้อผ้าบนเก้าอี้ใส่ตะกร้า</p>
+                                        <p class="text-[10px] text-amber-700">ผลลัพธ์: ห้องหายรกทันที 40% (2 นาที)</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-shirt text-amber-500"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-6 h-6 rounded-full bg-slate-400 text-white font-bold text-xs flex items-center justify-center">2</span>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">จัดระเบียบสายไฟและแก้วน้ำบนโต๊ะ</p>
+                                        <p class="text-[10px] text-slate-500">ผลลัพธ์: เพิ่มพื้นที่ทำงาน (3 นาที)</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-plug text-slate-400"></i>
+                            </div>
+
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/60 flex items-center justify-between">
+                                <div class="flex items-center space-x-3">
+                                    <span class="w-6 h-6 rounded-full bg-slate-400 text-white font-bold text-xs flex items-center justify-center">3</span>
+                                    <div>
+                                        <p class="text-xs font-bold text-slate-800">ดึงผ้าปูที่นอนให้ตึง</p>
+                                        <p class="text-[10px] text-slate-500">ผลลัพธ์: สบายตาขึ้นมาก (3 นาที)</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-bed text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- Speed Run Timer Launcher -->
+                        <div class="pt-2">
+                            <button onclick="startLazyTimer()" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs py-3 rounded-xl transition flex items-center justify-center gap-2 shadow-md">
+                                <i class="fa-solid fa-stopwatch text-base"></i> เริ่มโหมด "Lazy Speed-Run" 5 นาที (พร้อมเปิดเพลงมันส์ๆ)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lazy Speed-Run Timer Box (Initially Hidden) -->
+                <div id="speedrun-box" class="bg-slate-900 text-white p-5 rounded-2xl shadow-xl space-y-4 hidden">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div class="flex items-center space-x-2">
+                            <span class="animate-pulse w-3 h-3 rounded-full bg-red-500"></span>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-orange-400">Lazy Speed-Run Mode</h4>
+                        </div>
+                        <button onclick="stopLazyTimer()" class="text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-xmark"></i> ปิด</button>
+                    </div>
+
+                    <div class="text-center py-2">
+                        <div class="text-5xl font-black font-mono tracking-tight text-amber-400" id="timer-display">05:00</div>
+                        <p class="text-xs text-slate-400 mt-1">รีบเคลียร์ภารกิจให้เสร็จก่อนเพลงจบ!</p>
+                    </div>
+
+                    <!-- Simulated Audio Player -->
+                    <div class="bg-slate-800 p-3 rounded-xl flex items-center justify-between">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center text-xs animate-spin" style="animation-duration: 4s;">
+                                <i class="fa-solid fa-music"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-white">Focus Beat #4 (Upbeat House)</p>
+                                <p class="text-[10px] text-slate-400">เพิ่ม Dopamine ในการทำความสะอาด</p>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-volume-high text-amber-400 text-xs"></i>
+                    </div>
+
+                    <button onclick="completeSpeedRun()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs py-2.5 rounded-xl transition">
+                        <i class="fa-solid fa-circle-check"></i> ทำเสร็จแล้ว! รับ +100 Points
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- TAB 3: MICRO-HIRE & SWAP MARKET -->
+            <div id="tab-micro-hire" class="space-y-4 hidden">
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="font-bold text-slate-800 text-base flex items-center gap-2">
+                                <i class="fa-solid fa-hand-holding-hand text-emerald-600"></i>
+                                จ้างงานไมโคร (Micro-Cleaners)
+                            </h3>
+                            <p class="text-xs text-slate-400">ไม่ต้องจ้างแม่บ้านทั้งวัน จ้างเฉพาะงานที่เกลียดเริ่มต้น 99.-</p>
+                        </div>
+                    </div>
+
+                    <!-- Categories / Filter Pills -->
+                    <div class="flex space-x-2 overflow-x-auto hide-scrollbar pt-1 pb-1">
+                        <button class="bg-emerald-600 text-white text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap shadow-xs">ทั้งหมด</button>
+                        <button class="bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">ล้างจาน</button>
+                        <button class="bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">พับผ้า/พับผ้าห่ม</button>
+                        <button class="bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">ล้างห้องน้ำด่วน</button>
+                        <button class="bg-slate-100 text-slate-600 hover:bg-slate-200 text-xs font-medium px-3 py-1.5 rounded-full whitespace-nowrap">กวาด/ถูเฉพาะห้อง</button>
+                    </div>
+                </div>
+
+                <!-- Helper Listings -->
+                <div class="space-y-3">
+                    
+                    <!-- Helper Card 1 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-2xl object-cover border border-slate-100" alt="Cleaner">
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">พี่นก (Nok CleanExpress)</h4>
+                                    <p class="text-[11px] text-slate-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-star text-amber-400"></i> 4.9 (128 รีวิว) • ห่างจากคุณ 1.2 กม.
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="bg-emerald-50 text-emerald-700 font-bold text-xs px-2.5 py-1 rounded-lg border border-emerald-200/50">พร้อมบินใน 20 นาที</span>
+                        </div>
+
+                        <p class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            "เชี่ยวชาญการล้างจานกองโต พับผ้าให้เรียบเป๊ะ และทำความสะอาดระเบียงครับ"
+                        </p>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">ค่าบริการไมโคร</span>
+                                <span class="text-sm font-extrabold text-slate-800">฿99 <span class="text-[10px] font-normal text-slate-500">/ งาน (ไม่เกิน 30 นาที)</span></span>
+                            </div>
+                            <button onclick="bookMicroHelper('พี่นก', 99)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs px-4 py-2 rounded-xl transition shadow-xs">
+                                เรียกด่วนตอนนี้
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Helper Card 2 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm flex flex-col space-y-3">
+                        <div class="flex justify-between items-start">
+                            <div class="flex items-center space-x-3">
+                                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120&q=80" class="w-12 h-12 rounded-2xl object-cover border border-slate-100" alt="Cleaner">
+                                <div>
+                                    <h4 class="font-bold text-slate-800 text-sm">คุณบอย (Boy QuickTask)</h4>
+                                    <p class="text-[11px] text-slate-400 flex items-center gap-1">
+                                        <i class="fa-solid fa-star text-amber-400"></i> 4.8 (85 รีวิว) • ห่างจากคุณ 2.5 กม.
+                                    </p>
+                                </div>
+                            </div>
+                            <span class="bg-slate-100 text-slate-600 font-semibold text-xs px-2.5 py-1 rounded-lg">ว่างช่วงบ่าย</span>
+                        </div>
+
+                        <p class="text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                            "เน้นล้างห้องน้ำแบบ Deep Clean ด่วน และจัดระเบียบตู้เสื้อผ้า"
+                        </p>
+
+                        <div class="flex items-center justify-between pt-1">
+                            <div>
+                                <span class="text-[10px] text-slate-400 block">ค่าบริการไมโคร</span>
+                                <span class="text-sm font-extrabold text-slate-800">฿149 <span class="text-[10px] font-normal text-slate-500">/ งาน (45 นาที)</span></span>
+                            </div>
+                            <button onclick="bookMicroHelper('คุณบอย', 149)" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs px-4 py-2 rounded-xl transition shadow-xs">
+                                จองคิววันนี้
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 4: REWARDS & COMMUNITY LEADERBOARD -->
+            <div id="tab-rewards" class="space-y-4 hidden">
+                <!-- Points Overview Card -->
+                <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white p-5 rounded-2xl shadow-md space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs bg-white/20 px-2.5 py-1 rounded-md font-medium backdrop-blur-sm">Dust Points Wallet</span>
+                        <i class="fa-solid fa-coins text-2xl text-amber-200"></i>
+                    </div>
+                    <div>
+                        <span class="text-xs text-amber-100">คะแนนสะสมปัจจุบัน</span>
+                        <h3 class="text-3xl font-extrabold" id="rewards-points-display">150 PTS</h3>
+                    </div>
+                    <p class="text-[11px] text-amber-100">นำคะแนนที่ได้จากการทำภารกิจขี้เกียจมาแลกของรางวัลเจ๋งๆ ได้ฟรี!</p>
+                </div>
+
+                <!-- Reward Shop Grid -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-gift text-orange-500"></i>
+                        ร้านค้าแลกรางวัล (Reward Shop)
+                    </h3>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="border border-slate-100 p-3 rounded-xl flex flex-col justify-between space-y-2 bg-slate-50/50">
+                            <div>
+                                <span class="text-2xl">☕</span>
+                                <h4 class="font-bold text-slate-800 text-xs mt-1">ส่วนลด Starbucks 50.-</h4>
+                                <p class="text-[10px] text-slate-400">ใช้ 200 Dust Points</p>
+                            </div>
+                            <button onclick="redeemReward('คูปอง Starbucks 50 บาท', 200)" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[11px] py-1.5 rounded-lg transition">
+                                แลกรางวัล
+                            </button>
+                        </div>
+
+                        <div class="border border-slate-100 p-3 rounded-xl flex flex-col justify-between space-y-2 bg-slate-50/50">
+                            <div>
+                                <span class="text-2xl">🤖</span>
+                                <h4 class="font-bold text-slate-800 text-xs mt-1">ส่วนลดหุ่นยนต์ถูพื้น 15%</h4>
+                                <p class="text-[10px] text-slate-400">ใช้ 500 Dust Points</p>
+                            </div>
+                            <button onclick="redeemReward('ส่วนลดหุ่นยนต์ถูพื้น 15%', 500)" class="w-full bg-amber-500 hover:bg-amber-600 text-white font-semibold text-[11px] py-1.5 rounded-lg transition">
+                                แลกรางวัล
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaderboard -->
+                <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3">
+                    <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1.5">
+                        <i class="fa-solid fa-trophy text-amber-500"></i>
+                        ตารางคนขี้เกียจแต่ห้องสะอาดดีเด่น (Leaderboard)
+                    </h3>
+
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-amber-50/60 border border-amber-200/40">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-base font-extrabold text-amber-600 w-5 text-center">🥇</span>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">น้องมายด์ สายชิว</p>
+                                    <p class="text-[10px] text-slate-400">ทำความสะอาดไป 42 ภารกิจ</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-amber-600">1,450 pts</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-extrabold text-slate-400 w-5 text-center">2</span>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">พี่ตั้ม ทำทีละอย่าง</p>
+                                    <p class="text-[10px] text-slate-400">ทำความสะอาดไป 35 ภารกิจ</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-slate-600">1,200 pts</span>
+                        </div>
+
+                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-extrabold text-slate-400 w-5 text-center">3</span>
+                                <div>
+                                    <p class="text-xs font-bold text-slate-800">คุณ (You)</p>
+                                    <p class="text-[10px] text-slate-400">ทำความสะอาดไป 3 ภารกิจ</p>
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-emerald-600">150 pts</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: RESEARCH & SOURCE RATIONALE -->
+            <div id="tab-sources" class="space-y-4 hidden">
+                <div class="bg-indigo-900 text-white p-5 rounded-2xl shadow-md space-y-2">
+                    <span class="text-[10px] bg-indigo-700 text-indigo-200 px-2 py-0.5 rounded font-mono">PROJECT DOCUMENTATION</span>
+                    <h3 class="text-lg font-bold">เหตุผลการออกแบบ & ที่มาของ Feature ใหม่</h3>
+                    <p class="text-xs text-indigo-200">สรุปการวิจัยและทฤษฎีพฤติกรรมศาสตร์ที่นำมาแก้ปัญหาความขี้เกียจ</p>
+                </div>
+
+                <div class="space-y-3">
+                    
+                    <!-- Rationale Item 1 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs flex items-center justify-center">1</span>
+                            <h4 class="font-bold text-slate-800 text-xs">AI Room Scan & Low-Effort Task Prioritizer</h4>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1 pl-8">
+                            <p><strong class="text-indigo-600">แหล่งอ้างอิง/สร้างแรงบันดาลใจ:</strong> IKEA Creativ / RoomScan AI และหลักการ <em>Atomic Habits (James Clear - กฎ 2 นาที)</em></p>
+                            <p><strong class="text-slate-800">เหตุผลที่เลือกใช้:</strong> คนขี้เกียจมักเกิดภาวะ "Cognitive Overload" เมื่อเห็นห้องรกทั้งห้องจนไม่รู้จะเริ่มตรงไหน การใช้ AI สแกนแล้วย่อยเป็นงานเล็กๆ 2-3 นาทีเรียงตาม High Impact/Low Effort จะช่วยลดแรงต้านในสมอง ทำให้เริ่มลงมือทำได้ทันที</p>
+                        </div>
+                    </div>
+
+                    <!-- Rationale Item 2 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs flex items-center justify-center">2</span>
+                            <h4 class="font-bold text-slate-800 text-xs">On-Demand Micro-Cleaning (บริการจ้างงานเฉพาะจุด)</h4>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1 pl-8">
+                            <p><strong class="text-emerald-600">แหล่งอ้างอิง/สร้างแรงบันดาลใจ:</strong> โมเดล Micro-Gig Economy ของ TaskRabbit ร่วมกับ Instant Dispatch ของ Grab/Foodpanda</p>
+                            <p><strong class="text-slate-800">เหตุผลที่เลือกใช้:</strong> การจ้างแม่บ้านทั่วไปต้องจ้างอย่างน้อย 3-4 ชั่วโมง (ราคา 400-800 บาท) ซึ่งเกินความต้องการของคนที่ขี้เกียจทำแค่บางอย่าง เช่น "ไม่อยากล้างจานกองโต" หรือ "ไม่อยากพับผ้า" การแตกบริการเป็นชิ้นย่อยเริ่มต้น 99 บาท ตอบโจทย์กำลังซื้อและพฤติกรรมด่วนได้ทันที</p>
+                        </div>
+                    </div>
+
+                    <!-- Rationale Item 3 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center">3</span>
+                            <h4 class="font-bold text-slate-800 text-xs">Gamified Speed-Run Timer & Upbeat Audio</h4>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1 pl-8">
+                            <p><strong class="text-orange-600">แหล่งอ้างอิง/สร้างแรงบันดาลใจ:</strong> เทคนิค Pomodoro (แอป Forest) และเทรนด์ไวรัล #CleanWithMe Speedrun บน TikTok</p>
+                            <p><strong class="text-slate-800">เหตุผลที่เลือกใช้:</strong> เปลี่ยนงานบ้านอันน่าเบื่อให้กลายเป็น "เกมทำเวลา" สั้นๆ 5 นาที ร่วมกับจังหวะเพลงสนุกๆ ช่วยกระตุ้น Dopamine ให้รู้สึกท้าทายมากกว่ารู้สึกว่าเป็นภาระงาน</p>
+                        </div>
+                    </div>
+
+                    <!-- Rationale Item 4 -->
+                    <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-6 h-6 rounded-full bg-amber-100 text-amber-700 font-bold text-xs flex items-center justify-center">4</span>
+                            <h4 class="font-bold text-slate-800 text-xs">Dust Points & Streak Gamification System</h4>
+                        </div>
+                        <div class="text-xs text-slate-600 space-y-1 pl-8">
+                            <p><strong class="text-amber-600">แหล่งอ้างอิง/สร้างแรงบันดาลใจ:</strong> ระบบ Streak ของ Duolingo และ Starbucks Rewards</p>
+                            <p><strong class="text-slate-800">เหตุผลที่เลือกใช้:</strong> การทำความสะอาดให้ผลลัพธ์ที่ช้า แต่คะแนนส่วนลดและสถิติ Streak ให้ผลลัพธ์ตอบแทนทันที (Immediate Feedback Loop) ช่วยปรับนิสัยระยะยาวให้ทำต่อเนื่อง</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Bottom Navigation Bar -->
+        <nav class="absolute bottom-0 inset-x-0 bg-white border-t border-slate-100 px-3 py-2 flex justify-around items-center z-30 shadow-lg">
+            
+            <button onclick="switchTab('home')" class="nav-btn flex flex-col items-center p-1.5 text-emerald-600 font-bold" id="nav-home">
+                <i class="fa-solid fa-house text-lg"></i>
+                <span class="text-[10px] mt-0.5">หน้าแรก</span>
+            </button>
+
+            <button onclick="switchTab('ai-scanner')" class="nav-btn flex flex-col items-center p-1.5 text-slate-400 hover:text-slate-600" id="nav-ai-scanner">
+                <i class="fa-solid fa-wand-magic-sparkles text-lg"></i>
+                <span class="text-[10px] mt-0.5">AI สแกน</span>
+            </button>
+
+            <button onclick="switchTab('micro-hire')" class="nav-btn flex flex-col items-center p-1.5 text-slate-400 hover:text-slate-600" id="nav-micro-hire">
+                <i class="fa-solid fa-hand-holding-hand text-lg"></i>
+                <span class="text-[10px] mt-0.5">จ้างไมโคร</span>
+            </button>
+
+            <button onclick="switchTab('rewards')" class="nav-btn flex flex-col items-center p-1.5 text-slate-400 hover:text-slate-600" id="nav-rewards">
+                <i class="fa-solid fa-trophy text-lg"></i>
+                <span class="text-[10px] mt-0.5">รางวัล</span>
+            </button>
+
+            <button onclick="switchTab('sources')" class="nav-btn flex flex-col items-center p-1.5 text-slate-400 hover:text-slate-600" id="nav-sources">
+                <i class="fa-solid fa-book-bookmark text-lg"></i>
+                <span class="text-[10px] mt-0.5">เหตุผลฟีเจอร์</span>
+            </button>
+
+        </nav>
+
+        <!-- Dynamic Custom Popup / Modal -->
+        <div id="modal-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white w-full max-w-xs rounded-3xl p-5 text-center space-y-4 shadow-2xl animate-in fade-in zoom-in duration-200">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl" id="modal-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base" id="modal-title">แจ้งเตือน</h3>
+                    <p class="text-xs text-slate-500 mt-1" id="modal-body">รายละเอียดการทำงานสำเร็จแล้ว</p>
+                </div>
+                <button onclick="closeModal()" class="w-full bg-slate-900 text-white font-semibold text-xs py-2.5 rounded-xl">
+                    รับทราบ
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interactive Script Logic -->
+    <script>
+        // Global App State
+        let currentPoints = 150;
+        let completedMissions = 0;
+        let timerInterval = null;
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            // Hide all tabs
+            const tabs = ['home', 'ai-scanner', 'micro-hire', 'rewards', 'sources'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                
+                const navBtn = document.getElementById(`nav-${t}`);
+                if (navBtn) {
+                    navBtn.classList.remove('text-emerald-600', 'font-bold');
+                    navBtn.classList.add('text-slate-400');
+                }
+            });
+
+            // Show selected tab
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            
+            // Highlight Nav Button
+            const activeNavBtn = document.getElementById(`nav-${tabId}`);
+            if (activeNavBtn) {
+                activeNavBtn.classList.remove('text-slate-400');
+                activeNavBtn.classList.add('text-emerald-600', 'font-bold');
+            }
+
+            // Scroll main container back to top
+            document.getElementById('main-content').scrollTop = 0;
+        }
+
+        // Add Points Helper
+        function addPoints(amount) {
+            currentPoints += amount;
+            document.getElementById('user-points').innerText = currentPoints;
+            document.getElementById('rewards-points-display').innerText = `${currentPoints} PTS`;
+            
+            // Fire Confetti
+            try {
+                confetti({
+                    particleCount: 40,
+                    spread: 60,
+                    origin: { y: 0.8 }
+                });
+            } catch (e) {
+                console.log("Confetti library loaded");
+            }
+        }
+
+        // Task Toggle Logic
+        function toggleTask(checkbox, points) {
+            const taskCard = checkbox.closest('.task-card');
+            const title = taskCard.querySelector('.task-title');
+            
+            if (checkbox.checked) {
+                title.classList.add('line-through', 'text-slate-400');
+                taskCard.classList.add('opacity-75', 'bg-emerald-50/50');
+                completedMissions++;
+                addPoints(points);
+            } else {
+                title.classList.remove('line-through', 'text-slate-400');
+                taskCard.classList.remove('opacity-75', 'bg-emerald-50/50');
+                completedMissions = Math.max(0, completedMissions - 1);
+            }
+
+            document.getElementById('mission-progress-text').innerText = `${completedMissions}/3 สำเร็จ`;
+        }
+
+        // Trigger AI Room Scanner Simulation
+        function triggerAIScan() {
+            const scanLine = document.getElementById('scan-line');
+            const scanBtn = document.getElementById('scan-btn');
+            const aiResults = document.getElementById('ai-results');
+
+            scanBtn.disabled = true;
+            scanBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> กำลังวิเคราะห์รูปห้องด้วย AI...`;
+            scanLine.classList.remove('hidden');
+            scanLine.classList.add('animate-bounce-short');
+
+            setTimeout(() => {
+                scanLine.classList.add('hidden');
+                scanBtn.disabled = false;
+                scanBtn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> สแกนภาพใหม่อีกครั้ง`;
+                aiResults.classList.remove('hidden');
+                
+                // Auto Scroll down to results
+                aiResults.scrollIntoView({ behavior: 'smooth' });
+            }, 1800);
+        }
+
+        // Lazy Speed-Run Timer Logic
+        function startLazyTimer() {
+            const timerBox = document.getElementById('speedrun-box');
+            const display = document.getElementById('timer-display');
+            timerBox.classList.remove('hidden');
+            timerBox.scrollIntoView({ behavior: 'smooth' });
+
+            let duration = 300; // 5 minutes
+            
+            if (timerInterval) clearInterval(timerInterval);
+
+            timerInterval = setInterval(() => {
+                let minutes = parseInt(duration / 60, 10);
+                let seconds = parseInt(duration % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--duration < 0) {
+                    clearInterval(timerInterval);
+                    completeSpeedRun();
+                }
+            }, 1000);
+        }
+
+        function stopLazyTimer() {
+            if (timerInterval) clearInterval(timerInterval);
+            document.getElementById('speedrun-box').classList.add('hidden');
+        }
+
+        function completeSpeedRun() {
+            stopLazyTimer();
+            addPoints(100);
+            showModal("✨ สำเร็จภารกิจ!", "คุณเก่งมาก! ทำความสะอาดสปีดรัน 5 นาทีเรียบร้อยแล้ว รับ +100 Dust Points!", "fa-trophy");
+        }
+
+        // Modal Utilities
+        function showModal(title, body, iconClass = "fa-check") {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-body').innerText = body;
+            document.getElementById('modal-icon').innerHTML = `<i class="fa-solid ${iconClass}"></i>`;
+            document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+        }
+
+        // Quick Express Clean Modal
+        function openQuickCleanModal() {
+            showModal("⚡ Express Clean 15 นาที", "เลือกงานเฉพาะด่วนที่คุณต้องการเคลียร์ใน 15 นาที ระบบจะตั้งเวลาและจับคู่ตัวช่วยให้คุณครับ", "fa-bolt");
+        }
+
+        // Book Micro Helper Action
+        function bookMicroHelper(name, price) {
+            showModal(`🎉 จองงาน ${name} สำเร็จ!`, `ค่าบริการ ฿${price} ถูกยืนยันแล้ว แม่บ้านกำลังเดินทางไปหาคุณภายใน 20 นาทีครับ`, "fa-user-check");
+        }
+
+        // Redeem Rewards Action
+        function redeemReward(rewardTitle, cost) {
+            if (currentPoints >= cost) {
+                currentPoints -= cost;
+                document.getElementById('user-points').innerText = currentPoints;
+                document.getElementById('rewards-points-display').innerText = `${currentPoints} PTS`;
+                showModal("🎁 แลกของรางวัลสำเร็จ!", `คุณได้ทำการแลก "${rewardTitle}" เรียบร้อยแล้ว โค้ดส่วนลดส่งไปที่กล่องข้อความของคุณแล้วครับ`, "fa-gift");
+            } else {
+                showModal("❌ คะแนนไม่พอ", `ต้องใช้ ${cost} Points แต่คุณมี ${currentPoints} Points ทำภารกิจย่อยเพิ่มอีกนิดนะ!`, "fa-triangle-exclamation");
+            }
+        }
+    </script>
+</body>
+</html>
